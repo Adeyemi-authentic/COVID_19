@@ -1,0 +1,109 @@
+create database world_covid;
+use world_covid;
+create table covid_countries(
+country varchar(30) ,continent varchar(30),
+population int,total_cases int,total_death int,
+total_recovered int, active_cases int,critical_cases int,
+total_test int);
+insert into covid_countries(country,continent,population,total_cases,total_death,total_recovered,
+active_cases,critical_cases,total_test)
+values
+('US','NorthAmerica',331198130,5032179,162804,2576668,2292707,18296,63139605),
+('Brazil','SouthAmerica',212710692,2917562,98644,2047660,771258,8318,13206188),
+('India','Asia',1381344997,2025409,41638,1377384,606387,8944,22149351),
+('Russia','Europe',145940924,871894,14606,676357,180931,2300,29716907),
+('SouthAfrica','Africa',59381566,538184,9604,387316,141264,539,3149807),
+('Mexico','NorthAmerica',129066160,462690,50517,308848,103325,3987,1056915),
+('Peru','SouthAmerica',33016319,455409,20424,310337,124648,1426,2493429),
+('Chile','SouthAmerica',19132514,366671,9889,340168,16614,1358,1760615),
+('Colombia','SouthAmerica',50936262,357710,11939,192355,153416,1493,1801835),
+('Spain','Europe',46756648,354530,28500,36900,289130,617,7064329),
+('Iran','Asia',84097623,320117,17976,277463,24678,4156,2612763),
+('UK','Europe',67922029,308134,46413,4000,257721,73,17515234),
+('SaudiArabia','Asia',34865919,284226,3055,247089,34082,1915,3635705),
+('Pakistan','Asia',221295851,281863,6035,256058,19770,809,2058872),
+('Bangladesh','Asia',164851401,249651,3306,143824,102521,340,1225124),
+('Italy','Europe',60452568,249204,35187,201323,12694,42,7099713),
+('Turkey','Asia',84428331,237265,5798,220546,10921,580,5081802),
+('Argentina','SouthAmerica',45236884,228195,4251,99852,124092,1150,794544),
+('Germany','Europe',83811260,215210,9252,196200,9758,236,8586648),
+('France','Europe',65288306,195633,30312,82460,82861,384,3992206),
+('Iraq','Asia',40306025,140603,5161,101025,34417,517,1092741),
+('Philippines','Asia',109722719,119460,2150,66837,50473,239,1669996),
+('Indonesia','Asia',273808365,118753,5521,75645,37587,158,1633156),
+('Canada','NorthAmerica',37775022,118561,8966,103106,6489,2263,4319172),
+('Qatar','Asia',2807805,112092,178,108831,3083,77,511000),
+('Kazakhstan','Asia',18798667,95942,1058,68871,26013,221,2163713),
+('Egypt','Africa',102516525,95006,4951,48898,41157,41,135000),
+('Ecuador','SouthAmerica',17668824,90537,5877,71318,13342,378,258582),
+('Bolivia','SouthAmerica',11688459,86423,3465,27373,55585,71,183583),
+('Sweden','Europe',10105596,81967,5766,34221,41980,38,863315),
+('Oman','Asia',5118446,80713,492,70910,9311,177,309212),
+('Israel','Asia',9197590,79559,576,53427,25556,358,1872453),
+('Ukraine','Europe',43705858,76808,1819,42524,32465,158,1116641),
+('DominicanRepublic','NorthAmerica',10858648,76536,1246,40539,34751,317,281926),
+('Panama','NorthAmerica',4321282,71418,1574,45658,24186,161,240995),
+('Belgium','Europe',11594739,71158,9859,17661,43638,61,1767120),
+('Kuwait','Asia',4276658,70045,469,61610,7966,127,522200),
+('Belarus','Europe',9449001,68503,580,63756,4167,56,1344303),
+('UAE','Asia',9902079,61845,354,55739,5752,89,5262658),
+('Romania','Europe',19224023,57895,2566,28992,26337,458,1319369),
+('Netherlands','Europe',17138756,56982,6153,12879,37950,37,1079860),
+('Singapore','Asia',5854932,54555,27,48031,6497,66,1474372);
+
+-- 1. Get the total cases vs total desths IN UKRAINE --
+select sum(total_death) as totaldeath, sum(total_cases) as totalcases,
+(total_death/total_cases)*100
+ as death_percentage
+from covid_countries where country like'%UKRAINE%'
+group by total_cases,total_death
+;
+
+-- 2. What is the total population vs total cases in africa--
+select continent,population,total_cases,
+(total_cases/population)*100 
+as covid_case_percentage
+from covid_countries where continent like '%africa%';
+
+-- 3. show the top 5 countries with highest infection rate in europe--
+select country,continent,max(total_cases)
+ as Highest_infection_rate from 
+ covid_countries  where continent='europe'
+ group by country,continent
+ order by Highest_infection_rate desc limit 5 ;
+ 
+ -- 4. show countries with the highest death count in the population
+ 
+ select country,continent,max(total_death)
+ as death_rate from covid_countries
+ group by 1,2;
+ 
+ --  5. what is the total_death in africa--
+ select country,continent,sum(total_death)
+ as death_rate from covid_countries
+ where continent='africa'
+ group by 1,2;
+ 
+ -- 6. find the countries with over 800,000 cases
+ select country,continent,total_cases
+ from covid_countries where total_cases>800000;
+ 
+ -- 7.which country has the highest critical case
+ select country,continent,max(critical_cases)
+ from covid_countries
+ group by 1,2;
+ 
+select*from covid_countries;
+ 
+ -- 8.in what countries are the treatments working
+ select country,continent,max(total_recovered) as recovery_rate 
+ from covid_countries
+ group by 1,2;
+ 
+ 
+ 
+ -- countries with the highest number of cases 
+ select  continent,max(total_cases) as highest_cases from covid_countries
+ group by continent
+ order by highest_cases
+ ;
